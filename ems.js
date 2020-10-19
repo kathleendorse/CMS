@@ -78,6 +78,9 @@ const start=()=>{
       else if(answer.mainMenu === "View Departments"){
         viewDepartments();
       }
+      else if(answer.mainMenu === "View Roles"){
+        viewRoles();
+      }
       else if(answer.mainMenu === "View Employees"){
         viewEmployees();
       }
@@ -162,34 +165,57 @@ function addRole(){
   });
 }
 
-
 function addEmployee(){
-  inquirer.
-    prompt([
-      {
-        name: "firstName",
-        type: "input",
-        message: "What's the employee's first name?",
-      },
-      {
-        name: "lastName",
-        type: "input",
-        message: "What's the employee's last name?",
-      }
-    ]).then(function(answer){
-      connection.query(
-        "INSERT INTO employees SET ?",
+  connection.query("SELECT * FROM roles", function(err, res){
+    if (err) throw err;
+    inquirer.
+      prompt([
         {
-          FirstName: answer.firstName,
-          LastName: answer.lastName,
+          name: "role",
+          type: "rawlist",
+          choices: function(){
+            var roleArray = [];
+            for(var i=0; i<res.length; i++){
+              roleArray.push(res[i].Title);
+            }
+            return roleArray;
+          },
+          message: "What Is The Employee's Role?"
         },
-        function(err){
-          if (err) throw err;
-          console.log("Employee Successfully Added");
-          start();
+        {
+          name: "firstName",
+          type: "input",
+          message: "What's the employee's first name?",
+        },
+        {
+          name: "lastName",
+          type: "input",
+          message: "What's the employee's last name?",
         }
-      );
-    })
+      ]).then(function(answer){
+        var chosenRole;
+        for (var i=0; i<res.length; i++){
+          if(res[i].Title === answer.role){
+            chosenRole = res[i];
+          }
+        }
+        if(chosenRole && answer.firstName && answer.lastName){
+          connection.query(
+            "INSERT INTO employees SET ?",
+            {
+              FirstName: answer.firstName,
+              LastName: answer.lastName,
+              RoleID: chosenRole.RoleID
+            },
+            function(err){
+              if (err) throw err;
+              console.log("Employee Successfully Added");
+              start();
+            }
+          );
+        }
+    });
+  });
 }
 
 
@@ -198,6 +224,14 @@ function addEmployee(){
 //View All Departments
 function viewDepartments(){
   connection.query("SELECT * FROM departments", function(err, res){
+    if (err) throw err;
+    console.table(res);
+    start();
+  })
+}
+
+function viewRoles(){
+  connection.query("SELECT * FROM roles", function (err, res){
     if (err) throw err;
     console.table(res);
     start();
