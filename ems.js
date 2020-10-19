@@ -69,8 +69,14 @@ const start=()=>{
       if(answer.mainMenu === "Add Departments"){
         addDepartment();
       }
+      else if(answer.mainMenu === "Add Employees"){
+        addEmployee();
+      }
       else if(answer.mainMenu === "View Departments"){
         viewDepartments();
+      }
+      else if(answer.mainMenu === "View Employees"){
+        viewEmployees();
       }
       else if(answer.mainMenu === "Exit"){
         connection.end();
@@ -78,7 +84,8 @@ const start=()=>{
     })
 }
 
-//Add Departments to the DB.
+
+//---------------------ADD-----------------------------------
 function addDepartment(){
   inquirer.
     prompt({
@@ -99,13 +106,55 @@ function addDepartment(){
     });
 }
 
+function addEmployee(){
+  inquirer.
+    prompt([
+      {
+        name: "firstName",
+        type: "input",
+        message: "What's the employee's first name?",
+      },
+      {
+        name: "lastName",
+        type: "input",
+        message: "What's the employee's last name?",
+      }
+    ]).then(function(answer){
+      connection.query(
+        "INSERT INTO employees SET ?",
+        {
+          FirstName: answer.firstName,
+          LastName: answer.lastName,
+        },
+        function(err){
+          if (err) throw err;
+          console.log("Employee Successfully Added");
+          start();
+        }
+      );
+    })
+}
+
+
+//----------------------VIEW----------------------------------
+//View All Departments
 function viewDepartments(){
-  connection.query("SELECT * FROM departments", function(err, results){
+  connection.query("SELECT * FROM departments", function(err, res){
     if (err) throw err;
-    console.table(results);
+    console.table(res);
     start();
   })
 }
+
+function viewEmployees(){
+  connection.query("SELECT * FROM employees", function(err, res){
+    if (err) throw err;
+    console.table(res);
+    start();
+  })
+}
+
+
 
 
   
