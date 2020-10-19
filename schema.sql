@@ -1,0 +1,41 @@
+DROP DATABASE IF EXISTS ems_DB;
+CREATE DATABASE ems_DB;
+
+USE ems_DB;
+
+CREATE TABLE Departments(
+  DepartmentID int NOT NULL AUTO_INCREMENT,
+  DepartmentName VARCHAR(30) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE Roles(
+  RolesID INT NOT NULL AUTO_INCREMENT,
+  Title VARCHAR(30) NOT NULL,
+  Salary DECIMAL NOT NULL,
+  -- FOREIGN KEY FOR DEPARTMENT ID
+  FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID),
+  PRIMARY KEY (id)
+);
+
+
+CREATE TABLE Employees(
+  EmployeesID INT NOT NULL AUTO_INCREMENT,
+  FirstName VARCHAR(30) ,
+  LastName VARCHAR(30),
+  PRIMARY KEY (EmployeesID),
+    -- FOREIGN KEY FOR ROLE ID
+  FOREIGN KEY (RolesID) REFERENCES Roles(RolesID),
+  -- FOREIGN KEY FOR MANAGER ID
+
+  manager_id INT DEFAULT ,
+);
+
+
+
+
+
+
+
+ 
+
