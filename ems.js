@@ -46,20 +46,14 @@
 //     });
 //   }
 
-// Build a command-line application that at a minimum allows the user to:
-
-//   * Add departments, roles, employees
-
-//   * View departments, roles, employees
-
-//   * Update employee roles
-
 //--------------------------------------------------------
+
+//Main Menu
 const start=()=>{
   inquirer
     .prompt({
       name: "mainMenu",
-      type: "list",
+      type: "rawlist",
       message: "What would you like to do?",
       choices: [
         "Add Departments",
@@ -75,14 +69,16 @@ const start=()=>{
       if(answer.mainMenu === "Add Departments"){
         addDepartment();
       }
+      else if(answer.mainMenu === "View Departments"){
+        viewDepartments();
+      }
       else if(answer.mainMenu === "Exit"){
         connection.end();
       }
     })
 }
 
-//Write a function to add Departments to the DB.
-
+//Add Departments to the DB.
 function addDepartment(){
   inquirer.
     prompt({
@@ -101,6 +97,14 @@ function addDepartment(){
         }
       );
     });
+}
+
+function viewDepartments(){
+  connection.query("SELECT * FROM departments", function(err, results){
+    if (err) throw err;
+    console.table(results);
+    start();
+  })
 }
 
 
