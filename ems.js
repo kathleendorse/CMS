@@ -72,6 +72,9 @@ const start=()=>{
       else if(answer.mainMenu === "Add Employees"){
         addEmployee();
       }
+      else if(answer.mainMenu === "Add Roles"){
+        addRole();
+      }
       else if(answer.mainMenu === "View Departments"){
         viewDepartments();
       }
@@ -106,6 +109,60 @@ function addDepartment(){
     });
 }
 
+function addRole(){
+  connection.query("SELECT * FROM departments", function(err, res){
+    if (err) throw err;
+    inquirer.
+      prompt([
+        {
+          name: "department",
+          type: "rawlist",
+          choices: function(){
+            var choiceArray= [];
+            for (var i=0; i<res.length; i++){
+              choiceArray.push(res[i].DepartmentName);
+            }
+            return choiceArray;
+            },
+            message: "What Department Does The Role Belong to?"
+        },
+        {
+          name: "title",
+          type: "input",
+          message: "What Is The Title Of The Role?"
+        },
+        {
+          name: "salary",
+          type: "input",
+          message: "What Is The Salary Of The Role?"
+        }
+      ]).then(function(answer){
+        var chosenDepartment;
+        for (var i=0; i< res.length; i++){
+          if (res[i].DepartmentName === answer.department){
+            chosenDepartment = res[i];
+          }
+        }
+        if(chosenDepartment && answer.title && answer.salary){
+          connection.query(
+            "INSERT INTO roles SET ?",
+            {
+              Title: answer.title,
+              Salary: answer.salary,
+              DepartmentID:  chosenDepartment.DepartmentID,
+            },
+            function(err){
+              if (err) throw err;
+              console.log("Role was successfully added");
+              start();
+            }
+          );
+        }
+      });
+  });
+}
+
+
 function addEmployee(){
   inquirer.
     prompt([
@@ -134,6 +191,7 @@ function addEmployee(){
       );
     })
 }
+
 
 
 //----------------------VIEW----------------------------------
