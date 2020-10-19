@@ -1,0 +1,13 @@
+{
+  "name": "ems_DB",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ems.js",
+  "author": "kate dorse",
+  "license": "ISC",
+  "dependencies": {
+    "mysql": "^2.16.0",
+    "inquirer": "^6.2.1",
+    "console.table": "0.10.0"
+  }
+}
