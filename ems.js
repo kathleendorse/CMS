@@ -57,25 +57,50 @@
 //--------------------------------------------------------
 const start=()=>{
   inquirer
-  .prompt({
-    name: "mainMenu",
-    type: "rawlist",
-    message: "What would you like to do?",
-    choices: [
-      "Add Departments",
-      "Add Roles",
-      "Add Employees",
-      "View Departments",
-      "View Roles",
-      "View Employees",
-      "Update Employee Roles"
-    ]
-  }).then(answer=>{
-    console.log(answer);
-  })
+    .prompt({
+      name: "mainMenu",
+      type: "list",
+      message: "What would you like to do?",
+      choices: [
+        "Add Departments",
+        "Add Roles",
+        "Add Employees",
+        "View Departments",
+        "View Roles",
+        "View Employees",
+        "Update Employee Roles",
+        "Exit"
+      ]
+    }).then(function (answer){
+      if(answer.mainMenu === "Add Departments"){
+        addDepartment();
+      }
+      else if(answer.mainMenu === "Exit"){
+        connection.end();
+      }
+    })
+}
 
+//Write a function to add Departments to the DB.
 
-
+function addDepartment(){
+  inquirer.
+    prompt({
+      name: "departmentName",
+      type: "input",
+      message: "What is the Department's name?"
+    }).then(answer=>{
+      console.log(answer);
+      connection.query(
+        "INSERT INTO departments SET ?",
+        {DepartmentName: answer.departmentName},
+        function(err){
+          if(err) throw err;
+          console.log("Department was successfully Added");
+          start();
+        }
+      );
+    });
 }
 
 
