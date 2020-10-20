@@ -28,16 +28,3 @@ CREATE TABLE Employees(
   FOREIGN KEY (RoleID) REFERENCES Roles(RoleID),
   FOREIGN KEY (ManagerID) REFERENCES Employees(EmployeeID)
 );
-
-USE ems_DB;
-INSERT INTO roles (Title, Salary)
-VALUES("N/A", 0);
-
-USE ems_DB;
-INSERT INTO employees (FirstName, LastName, RoleID)
-VALUES("None", "None", 1);
-
--- BELOW LINE NEEDS TO BE RUN SEPARATELY- AFTER EVERYTHING ABOVE
-
-USE ems_DB;
-DELETE FROM employees WHERE EmployeeID = 2;
