@@ -23,8 +23,9 @@
 
   ## Usage
 
-  Ensure connection details in ems.js accurately reflect your workbench password
-  Use schema.sql to create database and tables
+   Ensure connection details in ems.js accurately reflect your workbench password
+   
+   Use schema.sql to create database and tables
   
    In Order to View Departments you must first "Add Departments"  
    
