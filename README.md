@@ -12,7 +12,6 @@
   * [Usage](#usage)
   * [License](#license)
   * [Contributing](#contributing)
-  * [Tests](#tests)
   * [Questions](#questions)
 
   ## Installation
@@ -45,13 +44,6 @@
 
   ## Contributing
   if you're interested in contributing, please reach out to me via email.
-
-  ## Tests
-  To run tests, run the following command:
-  
-  `
-  npm run test
-  `
 
   ## Questions
   If you have any questions about the repo, open an issue or contact [kathleendorse] (https://github.com/kathleendorse) directly at [kathleen.dorse@gmail.com]
