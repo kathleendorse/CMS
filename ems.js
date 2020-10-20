@@ -17,35 +17,6 @@
    start();
  });
 
-
-//-----------------------------EVERYTHING ABOVE THIS LINE WORKS
-
-
-//EACH FUNCTION SHOULD CONSOLE LOG SOMETHING & THEN RETURN TO START()
-//HOW DO WE END CONNECT?
-
-//starting prompt- main menu
-
-//FOR PROMPTS WITH A CHOICE: LISTING OPTIONS FROM DB- REFERENCE BIDAUCTION() FROM GRATEBAY
-//VALIDATE INPUT FOR ADD EMPLOYEE TO MAKE SURE IT IS A STRING
-//THE ONLY AREAS IN THE DB THAT CAN BE NULL IS MANAGER
-//if no mamanger listed, that area of the table is listed as "null"- DEFAULT NULL
-//dont forget when you're writing this code that it is an array of objects so you will be referring to indexes and properies of those indexes. i.e. res[i].first_name
-//SHOULD THERE BE CODE TO SET THE SALARY FOR EACH EMPLOYEE BASED ON THEIR ROLE?
-
-//USE PACKAGE.JSON FOR THE "START PROMPT TO RUN THE FILE"
-
-
-// function testingtable() {
-//     connection.query("SELECT * FROM employee", function(err, res) {
-//       if (err) throw err;
-  
-      
-//       console.table(res); //works to render the result in a table
-
-//     });
-//   }
-
 //--------------------------------------------------------
 
 //Main Menu
@@ -166,7 +137,13 @@ function addRole(){
 }
 
 function addEmployee(){
-  connection.query("SELECT * FROM roles", function(err, res){
+
+  var query = "SELECT roles.RoleID, roles.Title, ";
+  query += " employees.EmployeeID, employees.FirstName, employees.LastName ";
+  query += "FROM roles ";
+  query += "INNER JOIN employees ON roles.RoleID = employees.RoleID";
+
+  connection.query(query, function(err, res){
     if (err) throw err;
     inquirer.
       prompt([
@@ -174,11 +151,8 @@ function addEmployee(){
           name: "role",
           type: "rawlist",
           choices: function(){
-            var roleArray = [];
-            for(var i=0; i<res.length; i++){
-              roleArray.push(res[i].Title);
-            }
-            return roleArray;
+            const uniqueRoles = [...new Set(res.map(({Title})=> Title))];
+            return uniqueRoles;
           },
           message: "What Is The Employee's Role?"
         },
@@ -191,6 +165,15 @@ function addEmployee(){
           name: "lastName",
           type: "input",
           message: "What's the employee's last name?",
+        },
+        {
+          name: "manager",
+          type: "rawlist",
+          choices: function(){
+            var managerArray = res.map(({EmployeeID, FirstName, LastName})=>({name: `${FirstName} ${LastName}`, value: EmployeeID}));
+            return managerArray;
+          },
+          message: "Who Is The Employee's Manager?"
         }
       ]).then(function(answer){
         var chosenRole;
@@ -205,7 +188,8 @@ function addEmployee(){
             {
               FirstName: answer.firstName,
               LastName: answer.lastName,
-              RoleID: chosenRole.RoleID
+              RoleID: chosenRole.RoleID,
+              ManagerID: answer.manager
             },
             function(err){
               if (err) throw err;
@@ -216,6 +200,64 @@ function addEmployee(){
         }
     });
   });
+
+  
+
+//-------------------------------------
+
+    
+
+  //------------THIS WORKS FOR FINDING ROLES ONLY
+  // connection.query("SELECT * FROM roles", function(err, res){
+  //   if (err) throw err;
+  //   inquirer.
+  //     prompt([
+  //       {
+  //         name: "role",
+  //         type: "rawlist",
+  //         choices: function(){
+  //           var roleArray = [];
+  //           for(var i=0; i<res.length; i++){
+  //             roleArray.push(res[i].Title);
+  //           }
+  //           return roleArray;
+  //         },
+  //         message: "What Is The Employee's Role?"
+  //       },
+  //       {
+  //         name: "firstName",
+  //         type: "input",
+  //         message: "What's the employee's first name?",
+  //       },
+  //       {
+  //         name: "lastName",
+  //         type: "input",
+  //         message: "What's the employee's last name?",
+  //       }
+  //     ]).then(function(answer){
+  //       var chosenRole;
+  //       for (var i=0; i<res.length; i++){
+  //         if(res[i].Title === answer.role){
+  //           chosenRole = res[i];
+  //         }
+  //       }
+  //       if(chosenRole && answer.firstName && answer.lastName){
+  //         connection.query(
+  //           "INSERT INTO employees SET ?",
+  //           {
+  //             FirstName: answer.firstName,
+  //             LastName: answer.lastName,
+  //             RoleID: chosenRole.RoleID
+  //           },
+  //           function(err){
+  //             if (err) throw err;
+  //             console.log("Employee Successfully Added");
+  //             start();
+  //           }
+  //         );
+  //       }
+  //   });
+  // });
 }
 
 
