@@ -26,13 +26,17 @@
 
   Ensure connection details in ems.js accurately reflect your workbench password
   Use schema.sql to create database and tables
+  
+   In Order to View Departments you must first "Add Departments"  
+   
+   In Order to Add/View Employees you must first "Add Roles"
+   
+   In Order to Add/View Roles you must first "Add Departments"
+
 
   `
   node ems.js
   `
-  In Order to View Departments you must first "Add Departments"  
-  In Order to Add/View Employees you must first "Add Roles"
-  In Order to Add/View Roles you must first "Add Departments"
 
   <img src="https://github.com/kathleendorse/CMS/blob/master/assets/GIF_353_CMS_Employee_Tracker.gif?raw=true"></img>
 
