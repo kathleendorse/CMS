@@ -25,7 +25,7 @@ const start=()=>{
   inquirer
     .prompt({
       name: "mainMenu",
-      type: "rawlist",
+      type: "list",
       message: "What would you like to do?",
       choices: [
         "Add Departments",
@@ -95,7 +95,7 @@ function addRole(){
       prompt([
         {
           name: "department",
-          type: "rawlist",
+          type: "list",
           choices: function(){
             var choiceArray= [];
             for (var i=0; i<res.length; i++){
@@ -153,7 +153,7 @@ function addEmployee(){
       prompt([
         {
           name: "role",
-          type: "rawlist",
+          type: "list",
           choices: function(){
             const uniqueRoles = [...new Set(res.map(({Title})=> Title))];
             return uniqueRoles;
@@ -172,10 +172,9 @@ function addEmployee(){
         },
         {
           name: "manager",
-          type: "rawlist",
+          type: "list",
           choices: function(){
             var managerArray = res.map(({EmployeeID, FirstName, LastName})=>({name: `${FirstName} ${LastName}`, value: EmployeeID}));
-            managerArray.push({name: "None", value:null});
             return managerArray;
           },
           message: "Who Is The Employee's Manager?"
@@ -221,7 +220,7 @@ function updateEmployeeRole(){
       .prompt([
         {
           name : "employeeID",
-          type: "rawlist",
+          type: "list",
           choices:  function(){
             var employeeArray = res.map(({EmployeeID, FirstName, LastName})=>({name: `${FirstName} ${LastName}`, value: EmployeeID}));
             return employeeArray;
@@ -230,7 +229,7 @@ function updateEmployeeRole(){
         },
         {
           name: "newRole",
-          type: "rawlist",
+          type: "list",
           choices: function(){
             var roleArray = res.map(({RoleID, Title})=>({name: `${Title}`, value: RoleID}));
             const roleOptions = [...new Set(roleArray)];
@@ -297,7 +296,7 @@ function viewEmployees(){
 //     inquirer
 //         .prompt({
 //             name: "mainMenu",
-//             type: "rawlist",
+//             type: "list",
 //             message: "What would you like to do?",
 //             choices:[
 //                 "View All Employees",
@@ -388,7 +387,7 @@ function viewEmployees(){
 //             },
 //             {
 //             name: "role",
-//             type: "rawlist",
+//             type: "list",
 //             message: "What's the employee's role?",
 //             choices:[
 //                 "Sales Lead",
@@ -401,7 +400,7 @@ function viewEmployees(){
 //             },
 //             {
 //             name: "manager",
-//             type: "rawlist",
+//             type: "list",
 //             message: "Who is the employee's manager?",
 //             choices:[
 //                 //  (list including NONE as an option)
