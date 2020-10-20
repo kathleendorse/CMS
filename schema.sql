@@ -6,36 +6,38 @@ USE ems_DB;
 CREATE TABLE Departments(
   DepartmentID int NOT NULL AUTO_INCREMENT,
   DepartmentName VARCHAR(30) NOT NULL,
-  PRIMARY KEY (id)
+  PRIMARY KEY (DepartmentID)
 );
 
 CREATE TABLE Roles(
-  RolesID INT NOT NULL AUTO_INCREMENT,
+  RoleID INT NOT NULL AUTO_INCREMENT,
   Title VARCHAR(30) NOT NULL,
   Salary DECIMAL NOT NULL,
-  -- FOREIGN KEY FOR DEPARTMENT ID
-  FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID),
-  PRIMARY KEY (id)
+  DepartmentID INT,
+  PRIMARY KEY (RoleID),
+  FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
 );
-
 
 CREATE TABLE Employees(
-  EmployeesID INT NOT NULL AUTO_INCREMENT,
+  EmployeeID INT NOT NULL AUTO_INCREMENT,
   FirstName VARCHAR(30) ,
   LastName VARCHAR(30),
-  PRIMARY KEY (EmployeesID),
-    -- FOREIGN KEY FOR ROLE ID
-  FOREIGN KEY (RolesID) REFERENCES Roles(RolesID),
-  -- FOREIGN KEY FOR MANAGER ID
-
-  manager_id INT DEFAULT ,
+  RoleID INT,
+  ManagerID INT,
+  PRIMARY KEY (EmployeeID),
+  FOREIGN KEY (RoleID) REFERENCES Roles(RoleID),
+  FOREIGN KEY (ManagerID) REFERENCES Employees(EmployeeID)
 );
 
+USE ems_DB;
+INSERT INTO roles (Title, Salary)
+VALUES("N/A", 0);
 
+USE ems_DB;
+INSERT INTO employees (FirstName, LastName, RoleID)
+VALUES("None", "None", 1);
 
+-- BELOW LINE NEEDS TO BE RUN SEPARATELY- AFTER EVERYTHING ABOVE
 
-
-
-
- 
-
+USE ems_DB;
+DELETE FROM employees WHERE EmployeeID = 2;

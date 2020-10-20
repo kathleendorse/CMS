@@ -1,4 +1,4 @@
- var mysql = require("mysql");
+var mysql = require("mysql");
  var inquirer = require("inquirer");
  const cTable = require('console.table');
 
@@ -17,6 +17,7 @@
    start();
  });
 
+
 //--------------------------------------------------------
 
 //Main Menu
@@ -33,7 +34,7 @@ const start=()=>{
         "View Departments",
         "View Roles",
         "View Employees",
-        "Update Employee Roles",
+        "Update Employee Role",
         "Exit"
       ]
     }).then(function (answer){
@@ -55,7 +56,11 @@ const start=()=>{
       else if(answer.mainMenu === "View Employees"){
         viewEmployees();
       }
-      else if(answer.mainMenu === "Exit"){
+      else if(answer.mainMenu === "Update Employee Role"){
+        updateEmployeeRole();
+      }
+
+      else{
         connection.end();
       }
     })
@@ -137,11 +142,10 @@ function addRole(){
 }
 
 function addEmployee(){
-
   var query = "SELECT roles.RoleID, roles.Title, ";
-  query += " employees.EmployeeID, employees.FirstName, employees.LastName ";
+  query += "employees.EmployeeID, employees.FirstName, employees.LastName ";
   query += "FROM roles ";
-  query += "INNER JOIN employees ON roles.RoleID = employees.RoleID";
+  query += "LEFT JOIN employees ON roles.RoleID = employees.RoleID";
 
   connection.query(query, function(err, res){
     if (err) throw err;
@@ -171,6 +175,7 @@ function addEmployee(){
           type: "rawlist",
           choices: function(){
             var managerArray = res.map(({EmployeeID, FirstName, LastName})=>({name: `${FirstName} ${LastName}`, value: EmployeeID}));
+            managerArray.push({name: "None", value:null});
             return managerArray;
           },
           message: "Who Is The Employee's Manager?"
@@ -200,70 +205,65 @@ function addEmployee(){
         }
     });
   });
+}
 
-  
+//----------------------UPDATE----------------------------------
+function updateEmployeeRole(){
+  var query = "SELECT roles.RoleID, roles.Title, ";
+  query += "employees.EmployeeID, employees.FirstName, employees.LastName ";
+  query += "FROM roles ";
+  query += "LEFT JOIN employees ON roles.RoleID = employees.RoleID";
 
-//-------------------------------------
 
-    
-
-  //------------THIS WORKS FOR FINDING ROLES ONLY
-  // connection.query("SELECT * FROM roles", function(err, res){
-  //   if (err) throw err;
-  //   inquirer.
-  //     prompt([
-  //       {
-  //         name: "role",
-  //         type: "rawlist",
-  //         choices: function(){
-  //           var roleArray = [];
-  //           for(var i=0; i<res.length; i++){
-  //             roleArray.push(res[i].Title);
-  //           }
-  //           return roleArray;
-  //         },
-  //         message: "What Is The Employee's Role?"
-  //       },
-  //       {
-  //         name: "firstName",
-  //         type: "input",
-  //         message: "What's the employee's first name?",
-  //       },
-  //       {
-  //         name: "lastName",
-  //         type: "input",
-  //         message: "What's the employee's last name?",
-  //       }
-  //     ]).then(function(answer){
-  //       var chosenRole;
-  //       for (var i=0; i<res.length; i++){
-  //         if(res[i].Title === answer.role){
-  //           chosenRole = res[i];
-  //         }
-  //       }
-  //       if(chosenRole && answer.firstName && answer.lastName){
-  //         connection.query(
-  //           "INSERT INTO employees SET ?",
-  //           {
-  //             FirstName: answer.firstName,
-  //             LastName: answer.lastName,
-  //             RoleID: chosenRole.RoleID
-  //           },
-  //           function(err){
-  //             if (err) throw err;
-  //             console.log("Employee Successfully Added");
-  //             start();
-  //           }
-  //         );
-  //       }
-  //   });
-  // });
+  connection.query(query, function(err, res){
+    if (err) throw err;
+    inquirer
+      .prompt([
+        {
+          name : "employeeID",
+          type: "rawlist",
+          choices:  function(){
+            var employeeArray = res.map(({EmployeeID, FirstName, LastName})=>({name: `${FirstName} ${LastName}`, value: EmployeeID}));
+            return employeeArray;
+            },
+          message: "Which Employee's Role Do You Want To Update?"
+        },
+        {
+          name: "newRole",
+          type: "rawlist",
+          choices: function(){
+            var roleArray = res.map(({RoleID, Title})=>({name: `${Title}`, value: RoleID}));
+            const roleOptions = [...new Set(roleArray)];
+            return roleOptions;
+          },
+          message: "What Is The Employee's New Role?"
+        }
+      ]).then(
+        function(answer){
+          console.log(answer); 
+          connection.query("UPDATE employees SET ? WHERE ?",
+          [
+            {
+              RoleID: answer.newRole
+            },
+            {
+              EmployeeID: answer.employeeID
+            }
+          ],
+          function(err){
+            if (err) throw err;
+            console.log("Employee Role Successfully Updated");
+            start();
+          }
+          );
+        }
+      );
+  });
 }
 
 
 
 //----------------------VIEW----------------------------------
-//View All Departments
 function viewDepartments(){
   connection.query("SELECT * FROM departments", function(err, res){
     if (err) throw err;
